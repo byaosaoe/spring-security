@@ -61,12 +61,6 @@ public class SecurityConfig {
 						.anyRequest().authenticated();
 				}
 			)
-		
-			.sessionManagement(
-				session -> 
-					session.sessionCreationPolicy(
-						SessionCreationPolicy.STATELESS)
-			)
 			
 			.httpBasic(httpBasic -> httpBasic
                 .authenticationEntryPoint(authEntryPoint())  // 인증 실패 시 처리
@@ -80,11 +74,8 @@ public class SecurityConfig {
 				.configurationSource(corsConfigurationSource())
 			)
 			
-			.headers(headers -> headers
-				.frameOptions(frameOptionsConfig-> frameOptionsConfig.disable())
-			)
-			
 			.csrf(csrf->csrf.disable())
+			
 			.addFilterBefore(new JwtFilter(jwtService(), authEntryPoint()),UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
