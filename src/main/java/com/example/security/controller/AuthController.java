@@ -39,45 +39,45 @@ public class AuthController {
 	private final Logger log = LoggerFactory.getLogger(AuthController.class);
 
 	@Autowired
-    private OAuthService oauthService;
-    @Autowired
-    private CustomUserDetailsManager customUserDetailsManager;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
+    	private OAuthService oauthService;
+    	@Autowired
+    	private CustomUserDetailsManager customUserDetailsManager;
+    	@Autowired
+    	private JwtService jwtService;
+    	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
     
-    @GetMapping("/oauth2/{registrationId}")
-    public void loginByGoogleOauth(HttpServletResponse response, @RequestParam("code") String code,@PathVariable("registrationId") String registrationId) throws URISyntaxException, IOException {
+    	@GetMapping("/oauth2/{registrationId}")
+    	public void loginByGoogleOauth(HttpServletResponse response, @RequestParam("code") String code,@PathVariable("registrationId") String registrationId) throws URISyntaxException, IOException {
 		log.info("LOGIN : URL을 통해 로그인 화면 접근 & 코드 반환");
 		response.sendRedirect("http://localhost:5173/login/google?code="+code);
-    }
-    
-    @PostMapping("/join")
-	public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDto) {
-	    log.info("SIGN UP");
-		
-    	String email = memberDto.getEmail();
-    	String password = memberDto.getPassword();
-    	String nickname = memberDto.getNickname();
-    	String provider = memberDto.getProvider();
-    	String providerId = memberDto.getProviderId();
-    	
-    	Member member = Member.builder()
-    			.email(email)
-    			.password(passwordEncoder.encode(password))
-    			.nickname(nickname)
-    			.provider(provider)
-    			.providerId(providerId)
-    			.build();
-    	
-    	try {
-    		customUserDetailsManager.createUser(member);
-    		return ResponseEntity.ok("Your Account Is Created");
-    	} catch(UserAlreadyExistsException e) {
-    		return ResponseEntity.badRequest().body("Already Exists Email");
     	}
-    }
+    
+    	@PostMapping("/join")
+	public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDto) {
+		log.info("SIGN UP");
+		
+	    	String email = memberDto.getEmail();
+	    	String password = memberDto.getPassword();
+	    	String nickname = memberDto.getNickname();
+	    	String provider = memberDto.getProvider();
+	    	String providerId = memberDto.getProviderId();
+    	
+	    	Member member = Member.builder()
+	    			.email(email)
+	    			.password(passwordEncoder.encode(password))
+	    			.nickname(nickname)
+	    			.provider(provider)
+	    			.providerId(providerId)
+	    			.build();
+    	
+	    	try {
+	    		customUserDetailsManager.createUser(member);
+	    		return ResponseEntity.ok("Your Account Is Created");
+	    	} catch(UserAlreadyExistsException e) {
+	    		return ResponseEntity.badRequest().body("Already Exists Email");
+	    	}
+    	}
 
 	@PostMapping("/login/basic")
 	public ResponseEntity<?> loginByEmail(Authentication authentication) {
@@ -99,13 +99,13 @@ public class AuthController {
 		}
 	}
 	
-    @PostMapping("/oauth2/google")
-    public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam("code") String code) {
-    	log.info("LOGIN BY GOOGLE OAUTH & REDIRECT BY GOOGLE API SERVER");
+    	@PostMapping("/oauth2/google")
+    	public ResponseEntity<?> loginByGoogle(HttpServletResponse response, @RequestParam("code") String code) 
+		log.info("LOGIN BY GOOGLE OAUTH & REDIRECT BY GOOGLE API SERVER");
     	
-    	JsonNode googleUser = oauthService.socialLogin(code, "google");
-    	String email = googleUser.get("email").asText();
-    	String provider = "google";
+	    	JsonNode googleUser = oauthService.socialLogin(code, "google");
+	    	String email = googleUser.get("email").asText();
+	    	String provider = "google";
 		String providerId = googleUser.get("id").asText();
     	
 		try {
@@ -128,5 +128,5 @@ public class AuthController {
 			e.printStackTrace();
 			return ResponseEntity.internalServerError().body(null);
 		}
-    }
+    	}
 }
