@@ -21,19 +21,20 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPoint.class);
 	
 	@Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        logger.error("Unauthorized error: {}", authException.getMessage());
-
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        if (authException instanceof UsernameNotFoundException) {
-            response.getWriter().write("{\"error\": \"USER_NOT_FOUND\", \"message\": \"User does not exist\"}");
-        } else if (authException instanceof BadCredentialsException) {
-            response.getWriter().write("{\"error\": \"INVALID_CREDENCIALS\", \"message\": \"Invalid username or password\"}");
-        } else if (authException instanceof InvalidTokenException) {
-        	response.getWriter().write("{\"error\": \"INVALID_TOKEN\", \"message\": \"Invalid token\"}");
-        } else {
-            response.getWriter().write("{\"error\": \"AUTHENTICATION_FAILED\", \"message\": \"" + authException.getMessage() + "\"}");  
-        }
-    }
+    	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+	        logger.error("Unauthorized error: {}", authException.getMessage());
+	
+	        response.setContentType("application/json;charset=UTF-8");
+	        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		
+	        if (authException instanceof UsernameNotFoundException) {
+	            	response.getWriter().write("{\"error\": \"USER_NOT_FOUND\", \"message\": \"User does not exist\"}");
+	        } else if (authException instanceof BadCredentialsException) {
+	            	response.getWriter().write("{\"error\": \"INVALID_CREDENCIALS\", \"message\": \"Invalid username or password\"}");
+	        } else if (authException instanceof InvalidTokenException) {
+	        	response.getWriter().write("{\"error\": \"INVALID_TOKEN\", \"message\": \"Invalid token\"}");
+	        } else {
+	            	response.getWriter().write("{\"error\": \"AUTHENTICATION_FAILED\", \"message\": \"" + authException.getMessage() + "\"}");  
+	        }
+    	}
 }
